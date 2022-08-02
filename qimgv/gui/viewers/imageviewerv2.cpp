@@ -417,7 +417,7 @@ void ImageViewerV2::hide() {
 }
 
 void ImageViewerV2::requestScaling() {
-    if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.0f) || movie)
+    if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.5f) || movie)
         return;
     if(scaleTimer->isActive())
         scaleTimer->stop();
