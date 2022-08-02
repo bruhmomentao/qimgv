@@ -389,10 +389,10 @@ Qt::TransformationMode ImageViewerV2::selectTransformationMode() {
     if(forceFastScale) {
         mode = Qt::FastTransformation;
     } else if(movie) {
-        if(!smoothAnimatedImages || (pixmapItem.scale() > 1.0f && !smoothUpscaling))
+        if(!smoothAnimatedImages || (pixmapItem.scale() > 1.5f && !smoothUpscaling))
             mode = Qt::FastTransformation;
     } else {
-        if((pixmapItem.scale() > 1.0f && !smoothUpscaling) || mScalingFilter == QI_FILTER_NEAREST)
+        if((pixmapItem.scale() > 1.5f && !smoothUpscaling) || mScalingFilter == QI_FILTER_NEAREST)
             mode = Qt::FastTransformation;
     }
     return mode;
@@ -417,7 +417,7 @@ void ImageViewerV2::hide() {
 }
 
 void ImageViewerV2::requestScaling() {
-    if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.0f) || movie)
+    if(!pixmap || pixmapItem.scale() == 1.0f || (!smoothUpscaling && pixmapItem.scale() >= 1.5f) || movie)
         return;
     if(scaleTimer->isActive())
         scaleTimer->stop();
