@@ -12,6 +12,8 @@
 #include <QDir>
 #include <QKeySequence>
 #include <QMap>
+#include <QFont>
+#include <QFontMetrics>
 #include <QVersionNumber>
 #include <QThread>
 #include "utils/script.h"
@@ -192,12 +194,10 @@ public:
     int expandLimit();
     void setExpandLimit(int value);
 
-    qreal zoomStep();
-    void setZoomStep(qreal value);
+    float zoomStep();
+    void setZoomStep(float value);
     int JPEGSaveQuality();
     void setJPEGSaveQuality(int value);
-    bool useOpenGL();
-    void setUseOpenGL(bool mode);
     void setZoomIndicatorMode(ZoomIndicatorMode mode);
     ZoomIndicatorMode zoomIndicatorMode();
     void setFocusPointIn1to1Mode(ImageFocusPoint mode);
@@ -231,6 +231,7 @@ public:
 
     const ColorScheme& colorScheme();
     void setColorScheme(ColorScheme scheme);
+    void setColorTid(int tid);
 
     bool videoPlayback();
     void setVideoPlayback(bool mode);
@@ -282,6 +283,16 @@ public:
     void setMemoryAllocationLimit(int limitMB);
     bool panelCenterSelection();
     void setPanelCenterSelection(bool mode);
+    QString language();
+    void setLanguage(QString lang);
+
+    QString defaultZoomLevels();
+    QString zoomLevels();
+    void setZoomLevels(QString levels);
+    bool useFixedZoomLevels();
+    void setUseFixedZoomLevels(bool mode);
+    bool unlockMinZoom();
+    void setUnlockMinZoom(bool mode);
 
 private:
     explicit Settings(QObject *parent = nullptr);
@@ -295,6 +306,7 @@ private:
 
     void setupCache();
     void fillVideoFormats();
+
 signals:
     void settingsChanged();
 
