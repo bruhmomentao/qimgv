@@ -22,15 +22,25 @@ mkdir "$EXT_DIR"
 MPV_DIR=$EXT_DIR/mpv
 
 # ------------------------------------------------------------------------------
+echo "PREPARING BUILD DIR"
+rm -rf $BUILD_DIR
+mkdir -p $BUILD_DIR
+
+# ------------------------------------------------------------------------------
+echo "UPDATING DEPENDENCY LIST"
+wget --progress=dot:mega -O $BUILD_DIR/msys2-build-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-build-deps.txt
+wget --progress=dot:mega -O $BUILD_DIR/msys2-dll-deps.txt https://raw.githubusercontent.com/easymodo/qimgv-deps-bin/main/msys2-dll-deps.txt
+
+# ------------------------------------------------------------------------------
 echo "INSTALLING MSYS2 BUILD DEPS"
-MSYS_DEPS=$(cat $SCRIPTS_DIR/msys2-build-deps.txt | sed 's/\n/ /')
+MSYS_DEPS=$(cat $BUILD_DIR/msys2-build-deps.txt | sed 's/\n/ /')
 pacman -S $MSYS_DEPS --noconfirm --needed
 
 # ------------------------------------------------------------------------------
 echo "GETTING Qt"
 mkdir C:/qt
 cd C:/qt
-wget -O 5.15.3-mingw64-slim.7z https://github.com/easymodo/qt-builds/releases/download/5.15.3-mingw64-slim/5.15.3-mingw64-slim.7z
+wget --progress=dot:mega -O 5.15.3-mingw64-slim.7z https://github.com/easymodo/qt-builds/releases/download/5.15.3-mingw64-slim/5.15.3-mingw64-slim.7z
 7z x 5.15.3-mingw64-slim.7z -y
 rm 5.15.3-mingw64-slim.7z
 
@@ -38,7 +48,7 @@ rm 5.15.3-mingw64-slim.7z
 echo "GETTING OpenCV"
 mkdir $OPENCV_DIR
 cd $OPENCV_DIR
-wget -O opencv-minimal-4.5.5-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/opencv-minimal-4.5.5-x64.7z
+wget --progress=dot:mega -O opencv-minimal-4.5.5-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/opencv-minimal-4.5.5-x64.7z
 7z x opencv-minimal-4.5.5-x64.7z -y
 rm opencv-minimal-4.5.5-x64.7z
 
@@ -46,7 +56,7 @@ rm opencv-minimal-4.5.5-x64.7z
 echo "GETTING MPV"
 mkdir $MPV_DIR
 cd $MPV_DIR
-wget -O mpv-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/mpv-x64.7z
+wget --progress=dot:mega -O mpv-x64.7z https://github.com/easymodo/qimgv-deps-bin/releases/download/x64/mpv-x86_64-20230402-git-0f13c38.7z
 7z x mpv-x64.7z -y
 rm mpv-x64.7z
 
@@ -73,7 +83,7 @@ rm mpv-x64.7z
 
 # ------------------------------------------------------------------------------
 echo "BUILDING"
-rm -rf $BUILD_DIR
+#rm -rf $BUILD_DIR
 sed -i 's|opencv4/||' $SRC_DIR/qimgv/3rdparty/QtOpenCV/cvmatandqimage.{h,cpp}
 cmake -S $SRC_DIR -B $BUILD_DIR -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
@@ -175,7 +185,7 @@ mkdir $PACKAGE_DIR/platforms
 cp platforms/qwindows.dll $PACKAGE_DIR/platforms
 
 # 3 - copy msys dlls
-MSYS_DLLS=$(cat $SCRIPTS_DIR/msys2-dll-deps.txt | sed 's/\n/ /')
+MSYS_DLLS=$(cat $BUILD_DIR/msys2-dll-deps.txt | sed 's/\n/ /')
 cd $MSYS_DIR/bin
 cp $MSYS_DLLS $PACKAGE_DIR
 
@@ -190,7 +200,7 @@ cp $EXT_DIR/qtraw/build/src/imageformats/qtraw.dll $PACKAGE_DIR/imageformats
 cd $OPENCV_DIR/x64/mingw/bin
 cp libopencv_core455.dll libopencv_imgproc455.dll $PACKAGE_DIR
 cd $MPV_DIR/bin/x86_64
-cp mpv.exe mpv-1.dll $PACKAGE_DIR
+cp mpv.exe libmpv-2.dll $PACKAGE_DIR
 
 # 6 - misc
 mkdir $PACKAGE_DIR/cache
